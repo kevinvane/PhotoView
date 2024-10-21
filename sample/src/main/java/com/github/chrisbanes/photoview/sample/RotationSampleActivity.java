@@ -39,28 +39,28 @@ public class RotationSampleActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_rotate_10_right:
-                        photo.setRotationBy(10);
-                        return true;
-                    case R.id.action_rotate_10_left:
-                        photo.setRotationBy(-10);
-                        return true;
-                    case R.id.action_toggle_automatic_rotation:
-                        toggleRotation();
-                        return true;
-                    case R.id.action_reset_to_0:
-                        photo.setRotationTo(0);
-                        return true;
-                    case R.id.action_reset_to_90:
-                        photo.setRotationTo(90);
-                        return true;
-                    case R.id.action_reset_to_180:
-                        photo.setRotationTo(180);
-                        return true;
-                    case R.id.action_reset_to_270:
-                        photo.setRotationTo(270);
-                        return true;
+                int itemId = item.getItemId();
+                if (itemId == R.id.action_rotate_10_right) {
+                    photo.setRotationBy(10);
+                    return true;
+                } else if (itemId == R.id.action_rotate_10_left) {
+                    photo.setRotationBy(-10);
+                    return true;
+                } else if (itemId == R.id.action_toggle_automatic_rotation) {
+                    toggleRotation();
+                    return true;
+                } else if (itemId == R.id.action_reset_to_0) {
+                    photo.setRotationTo(0);
+                    return true;
+                } else if (itemId == R.id.action_reset_to_90) {
+                    photo.setRotationTo(90);
+                    return true;
+                } else if (itemId == R.id.action_reset_to_180) {
+                    photo.setRotationTo(180);
+                    return true;
+                } else if (itemId == R.id.action_reset_to_270) {
+                    photo.setRotationTo(270);
+                    return true;
                 }
                 return false;
             }

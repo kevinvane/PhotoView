@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.chrisbanes.photoview.sample">
+    xmlns:tools="http://schemas.android.com/tools">
+    <!--package="com.github.chrisbanes.photoview.sample"-->
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,7 +12,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".LauncherActivity">
+        <activity
+            android:name=".LauncherActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
