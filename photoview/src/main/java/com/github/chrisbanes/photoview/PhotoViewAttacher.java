@@ -20,6 +20,7 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -149,6 +150,15 @@ public class PhotoViewAttacher implements View.OnTouchListener,
 
         @Override
         public void onScale(float scaleFactor, float focusX, float focusY, float dx, float dy) {
+
+            // 禁止缩小到比例1以下
+            // 本来的效果是，允许缩小到1以下，抬手再回弹到比例1
+            // 但需要里底部有遮挡的UI，所以禁止缩小到1以下
+            if(scaleFactor < 1f && getScale() < 1f){
+                Log.w("onScale","scale less 1f.");
+                return;
+            }
+
             if (getScale() < mMaxScale || scaleFactor < 1f) {
                 if (mScaleChangeListener != null) {
                     mScaleChangeListener.onScaleChange(scaleFactor, focusX, focusY);
@@ -196,62 +206,64 @@ public class PhotoViewAttacher implements View.OnTouchListener,
                 return false;
             }
         });
-        mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (mOnClickListener != null) {
-                    mOnClickListener.onClick(mImageView);
-                }
-                final RectF displayRect = getDisplayRect();
-                final float x = e.getX(), y = e.getY();
-                if (mViewTapListener != null) {
-                    mViewTapListener.onViewTap(mImageView, x, y);
-                }
-                if (displayRect != null) {
-                    // Check to see if the user tapped on the photo
-                    if (displayRect.contains(x, y)) {
-                        float xResult = (x - displayRect.left)
-                            / displayRect.width();
-                        float yResult = (y - displayRect.top)
-                            / displayRect.height();
-                        if (mPhotoTapListener != null) {
-                            mPhotoTapListener.onPhotoTap(mImageView, xResult, yResult);
-                        }
-                        return true;
-                    } else {
-                        if (mOutsidePhotoTapListener != null) {
-                            mOutsidePhotoTapListener.onOutsidePhotoTap(mImageView);
-                        }
-                    }
-                }
-                return false;
-            }
 
-            @Override
-            public boolean onDoubleTap(MotionEvent ev) {
-                try {
-                    float scale = getScale();
-                    float x = ev.getX();
-                    float y = ev.getY();
-                    if (scale < getMediumScale()) {
-                        setScale(getMediumScale(), x, y, true);
-                    } else if (scale >= getMediumScale() && scale < getMaximumScale()) {
-                        setScale(getMaximumScale(), x, y, true);
-                    } else {
-                        setScale(getMinimumScale(), x, y, true);
-                    }
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    // Can sometimes happen when getX() and getY() is called
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onDoubleTapEvent(MotionEvent e) {
-                // Wait for the confirmed onDoubleTap() instead
-                return false;
-            }
-        });
+        // 不需要双击放大的功能，注释掉
+        // mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+        //     @Override
+        //     public boolean onSingleTapConfirmed(MotionEvent e) {
+        //         if (mOnClickListener != null) {
+        //             mOnClickListener.onClick(mImageView);
+        //         }
+        //         final RectF displayRect = getDisplayRect();
+        //         final float x = e.getX(), y = e.getY();
+        //         if (mViewTapListener != null) {
+        //             mViewTapListener.onViewTap(mImageView, x, y);
+        //         }
+        //         if (displayRect != null) {
+        //             // Check to see if the user tapped on the photo
+        //             if (displayRect.contains(x, y)) {
+        //                 float xResult = (x - displayRect.left)
+        //                     / displayRect.width();
+        //                 float yResult = (y - displayRect.top)
+        //                     / displayRect.height();
+        //                 if (mPhotoTapListener != null) {
+        //                     mPhotoTapListener.onPhotoTap(mImageView, xResult, yResult);
+        //                 }
+        //                 return true;
+        //             } else {
+        //                 if (mOutsidePhotoTapListener != null) {
+        //                     mOutsidePhotoTapListener.onOutsidePhotoTap(mImageView);
+        //                 }
+        //             }
+        //         }
+        //         return false;
+        //     }
+        //
+        //     @Override
+        //     public boolean onDoubleTap(MotionEvent ev) {
+        //         try {
+        //             float scale = getScale();
+        //             float x = ev.getX();
+        //             float y = ev.getY();
+        //             if (scale < getMediumScale()) {
+        //                 setScale(getMediumScale(), x, y, true);
+        //             } else if (scale >= getMediumScale() && scale < getMaximumScale()) {
+        //                 setScale(getMaximumScale(), x, y, true);
+        //             } else {
+        //                 setScale(getMinimumScale(), x, y, true);
+        //             }
+        //         } catch (ArrayIndexOutOfBoundsException e) {
+        //             // Can sometimes happen when getX() and getY() is called
+        //         }
+        //         return true;
+        //     }
+        //
+        //     @Override
+        //     public boolean onDoubleTapEvent(MotionEvent e) {
+        //         // Wait for the confirmed onDoubleTap() instead
+        //         return false;
+        //     }
+        // });
     }
 
     public void setOnDoubleTapListener(GestureDetector.OnDoubleTapListener newOnDoubleTapListener) {
