@@ -607,6 +607,16 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     }
 
     /**
+     * 平移
+     * @param dx x轴平移的距离
+     * @param dy y轴平移的距离
+     */
+    public void postTranslate(float dx, float dy){
+
+        mSuppMatrix.postTranslate(dx, dy);
+        checkAndDisplayMatrix();
+    }
+    /**
      * Calculate Matrix for FIT_CENTER
      *
      * @param drawable - Drawable being displayed
