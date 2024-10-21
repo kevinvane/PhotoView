@@ -128,7 +128,10 @@ public class SimpleSampleActivity extends AppCompatActivity {
 
         // Lets attach some listeners, not required though!
         mPhotoView.setOnMatrixChangeListener(new MatrixChangeListener());
-        mPhotoView.setOnPhotoTapListener(new PhotoTapListener());
+
+        // mPhotoView.setOnScaleChangeListener();
+
+        // mPhotoView.setOnPhotoTapListener(new PhotoTapListener());
         mPhotoView.setOnSingleFlingListener(new SingleFlingListener());
     }
 
@@ -156,7 +159,7 @@ public class SimpleSampleActivity extends AppCompatActivity {
 
         @Override
         public void onMatrixChanged(RectF rect) {
-            mCurrMatrixTv.setText(rect.toString());
+            mCurrMatrixTv.setText(rect.toString() + "\n scale:" + mPhotoView.getScale());
         }
     }
 

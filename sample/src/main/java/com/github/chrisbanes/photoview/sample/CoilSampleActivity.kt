@@ -12,7 +12,7 @@ class CoilSampleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_simple)
 
         val photoView = findViewById<PhotoView>(R.id.iv_photo)
-        photoView.load("https://images.unsplash.com/photo-1577643816920-65b43ba99fba?ixlib=rb-1.2.1&auto=format&fit=crop&w=3300&q=80") {
+        photoView.load("http://img.daimg.com/uploads/allimg/230618/3-23061R12333.jpg") {
             crossfade(true)
         }
     }
