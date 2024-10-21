@@ -19,6 +19,8 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -44,6 +46,7 @@ public class SimpleSampleActivity extends AppCompatActivity {
     static final String SCALE_TOAST_STRING = "Scaled to: %.2ff";
     static final String FLING_LOG_STRING = "Fling velocityX: %.2f, velocityY: %.2f";
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private PhotoView mPhotoView;
     private TextView mCurrMatrixTv;
 
@@ -123,8 +126,14 @@ public class SimpleSampleActivity extends AppCompatActivity {
         mPhotoView = findViewById(R.id.iv_photo);
         mCurrMatrixTv = findViewById(R.id.tv_current_matrix);
 
-        Drawable bitmap = ContextCompat.getDrawable(this, R.drawable.wallpaper);
+        Drawable bitmap = ContextCompat.getDrawable(this, R.drawable.test);
+        mPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mPhotoView.setImageDrawable(bitmap);
+        mHandler.postDelayed(()->{
+            RectF displayRect = mPhotoView.getDisplayRect();
+            Log.d("DisplayRect", displayRect.toString());
+            mPhotoView.attacher.postTranslate(0,Math.abs(displayRect.top));
+        },200);
 
         // Lets attach some listeners, not required though!
         mPhotoView.setOnMatrixChangeListener(new MatrixChangeListener());
@@ -132,7 +141,7 @@ public class SimpleSampleActivity extends AppCompatActivity {
         // mPhotoView.setOnScaleChangeListener();
 
         // mPhotoView.setOnPhotoTapListener(new PhotoTapListener());
-        mPhotoView.setOnSingleFlingListener(new SingleFlingListener());
+        // mPhotoView.setOnSingleFlingListener(new SingleFlingListener());
     }
 
     private class PhotoTapListener implements OnPhotoTapListener {
