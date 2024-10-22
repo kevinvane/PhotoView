@@ -207,6 +207,49 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             }
         });
 
+        mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onClick(mImageView);
+                }
+                final RectF displayRect = getDisplayRect();
+                final float x = e.getX(), y = e.getY();
+                if (mViewTapListener != null) {
+                    mViewTapListener.onViewTap(mImageView, x, y);
+                }
+                if (displayRect != null) {
+                    // Check to see if the user tapped on the photo
+                    if (displayRect.contains(x, y)) {
+                        float xResult = (x - displayRect.left)
+                                / displayRect.width();
+                        float yResult = (y - displayRect.top)
+                                / displayRect.height();
+                        if (mPhotoTapListener != null) {
+                            mPhotoTapListener.onPhotoTap(mImageView, xResult, yResult);
+                        }
+                        return true;
+                    } else {
+                        if (mOutsidePhotoTapListener != null) {
+                            mOutsidePhotoTapListener.onOutsidePhotoTap(mImageView);
+                        }
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent ev) {
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                // Wait for the confirmed onDoubleTap() instead
+                return false;
+            }
+        });
+
         // 不需要双击放大的功能，注释掉
         // mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
         //     @Override

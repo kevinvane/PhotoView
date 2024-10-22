@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.github.chrisbanes.photoview.OnMatrixChangedListener;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.OnSingleFlingListener;
+import com.github.chrisbanes.photoview.OnViewTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.Random;
@@ -42,6 +43,7 @@ import androidx.core.content.ContextCompat;
 
 public class SimpleSampleActivity extends AppCompatActivity {
 
+    static final String VIEW_TAP_TOAST_STRING = "View Tap! X: %.2f %% Y:%.2f %% ID: %d";
     static final String PHOTO_TAP_TOAST_STRING = "Photo Tap! X: %.2f %% Y:%.2f %% ID: %d";
     static final String SCALE_TOAST_STRING = "Scaled to: %.2ff";
     static final String FLING_LOG_STRING = "Fling velocityX: %.2f, velocityY: %.2f";
@@ -140,8 +142,25 @@ public class SimpleSampleActivity extends AppCompatActivity {
 
         // mPhotoView.setOnScaleChangeListener();
 
+        mPhotoView.setOnViewTapListener(new PhotoViewTapListener());
         // mPhotoView.setOnPhotoTapListener(new PhotoTapListener());
         // mPhotoView.setOnSingleFlingListener(new SingleFlingListener());
+
+        // 测试是否拦截了父View的点击事件
+        findViewById(R.id.mRootView).setOnClickListener(v -> {
+            Log.d("mRootView","Click -> " + System.currentTimeMillis());
+        });
+    }
+
+    private class PhotoViewTapListener implements OnViewTapListener {
+
+        @Override
+        public void onViewTap(View view, float x, float y) {
+            float xPercentage = x * 100f;
+            float yPercentage = y * 100f;
+
+            showToast(String.format(VIEW_TAP_TOAST_STRING, xPercentage, yPercentage, view == null ? 0 : view.getId()));
+        }
     }
 
     private class PhotoTapListener implements OnPhotoTapListener {
