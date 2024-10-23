@@ -134,7 +134,7 @@ public class SimpleSampleActivity extends AppCompatActivity {
         mHandler.postDelayed(()->{
             RectF displayRect = mPhotoView.getDisplayRect();
             Log.d("DisplayRect", displayRect.toString());
-            mPhotoView.attacher.postTranslate(0,Math.abs(displayRect.top));
+            mPhotoView.setTranslate(0,Math.abs(displayRect.top));
         },200);
 
         // Lets attach some listeners, not required though!

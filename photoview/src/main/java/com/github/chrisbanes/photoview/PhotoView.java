@@ -226,6 +226,10 @@ public class PhotoView extends AppCompatImageView {
         attacher.setOnViewDragListener(listener);
     }
 
+    public void setTranslate(float dx, float dy){
+        attacher.postTranslate(dx,dy);
+    }
+
     public void setScale(float scale) {
         attacher.setScale(scale);
     }
