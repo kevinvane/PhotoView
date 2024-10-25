@@ -21,6 +21,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -32,6 +33,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 @SuppressWarnings("unused")
 public class PhotoView extends AppCompatImageView {
 
+    private static final String TAG = "PhotoView";
     public PhotoViewAttacher attacher;
     private ScaleType pendingScaleType;
 
@@ -99,6 +101,18 @@ public class PhotoView extends AppCompatImageView {
             attacher.setScaleType(scaleType);
         }
     }
+    public void setCenterCropOffset(float x , float y) {
+        if (attacher != null) {
+            attacher.setCenterCropOffset(x,y);
+        }
+    }
+    // public void setOffsetCrop(float x , float y) {
+    //     if (attacher == null) {
+    //         pendingScaleType = ScaleType.CENTER_CROP;
+    //     } else {
+    //         attacher.setOffsetCrop(x,y);
+    //     }
+    // }
 
     @Override
     public void setImageDrawable(Drawable drawable) {

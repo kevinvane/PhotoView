@@ -40,6 +40,7 @@ import android.widget.OverScroller;
 public class PhotoViewAttacher implements View.OnTouchListener,
     View.OnLayoutChangeListener {
 
+    private static final String TAG = "PhotoViewAttacher";
     private static float DEFAULT_MAX_SCALE = 3.0f;
     private static float DEFAULT_MID_SCALE = 1.75f;
     private static float DEFAULT_MIN_SCALE = 1.0f;
@@ -95,6 +96,8 @@ public class PhotoViewAttacher implements View.OnTouchListener,
 
     private boolean mZoomEnabled = true;
     private ScaleType mScaleType = ScaleType.FIT_CENTER;
+
+    private float mOffsetX, mOffsetY;
 
     private OnGestureListener onGestureListener = new OnGestureListener() {
         @Override
@@ -535,11 +538,37 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     }
 
     public void setScaleType(ScaleType scaleType) {
-        if (Util.isSupportedScaleType(scaleType) && scaleType != mScaleType) {
+        // 取消 scaleType != mScaleType 这个条件，只要设置就处理（这在RecycleView中很有必要）
+        if (Util.isSupportedScaleType(scaleType)) {
+        // if (Util.isSupportedScaleType(scaleType) && scaleType != mScaleType) {
             mScaleType = scaleType;
             update();
+        }else{
+            Log.w(TAG, "setScaleType: " + scaleType.toString() + " is not supported!");
         }
     }
+
+    /**
+     * 单独设置变量，方便在列表中使用
+     * 设置变量后，要调用 photoView.scaleType = ScaleType.CENTER_CROP 才会生效
+     * @param x
+     * @param y
+     */
+    public void setCenterCropOffset(float x , float y) {
+        mOffsetX = x;
+        mOffsetY = y;
+    }
+    // /**
+    //  * ScaleType.CENTER_CROP ，但可以设置偏移量
+    //  * @param x
+    //  * @param y
+    //  */
+    // public void setOffsetCrop(float x , float y) {
+    //     mOffsetX = x;
+    //     mOffsetY = y;
+    //     mScaleType = ScaleType.CENTER_CROP;
+    //     update();
+    // }
 
     public boolean isZoomable() {
         return mZoomEnabled;
@@ -682,9 +711,25 @@ public class PhotoViewAttacher implements View.OnTouchListener,
         } else if (mScaleType == ScaleType.CENTER_CROP) {
             float scale = Math.max(widthScale, heightScale);
             mBaseMatrix.postScale(scale, scale);
-            mBaseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F,
-                (viewHeight - drawableHeight * scale) / 2F);
+            // 本来CENTER_CROP效果是居中裁剪。
+            // 这里做了修改，如果设置setOffsetCrop()偏移量mOffsetX，mOffsetY，则按照偏移量来平移
+            float dx , dy;
+            if(Math.abs(mOffsetX) > 0){
+                dx = mOffsetX;
+            }else{
+                dx = (viewWidth - drawableWidth * scale) / 2F;
+            }
+            if(Math.abs(mOffsetY) > 0){
+                dy = mOffsetY;
+            }else{
+                dy = (viewHeight - drawableHeight * scale) / 2F;
+            }
+            mBaseMatrix.postTranslate(dx, dy);
+            Log.w(TAG, "setScaleType: CENTER_CROP Success!");
 
+            // CENTER_CROP 居中
+            // mBaseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F,
+            //         (viewHeight - drawableHeight * scale) / 2F);
         } else if (mScaleType == ScaleType.CENTER_INSIDE) {
             float scale = Math.min(1.0f, Math.min(widthScale, heightScale));
             mBaseMatrix.postScale(scale, scale);
@@ -699,6 +744,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             }
             switch (mScaleType) {
                 case FIT_CENTER:
+                    Log.w(TAG, "setScaleType: FIT_CENTER!");
                     mBaseMatrix.setRectToRect(mTempSrc, mTempDst, ScaleToFit.CENTER);
                     break;
                 case FIT_START:

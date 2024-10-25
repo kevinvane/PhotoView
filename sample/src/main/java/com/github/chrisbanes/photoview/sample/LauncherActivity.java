@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class LauncherActivity extends AppCompatActivity {
 
+    public static float moveTop;
     public static final String[] options = {
             "Simple Sample",
             "ViewPager Sample",
@@ -37,7 +38,8 @@ public class LauncherActivity extends AppCompatActivity {
             "Picasso Sample",
             "Coil Sample",
             "Activity Transition Sample",
-            "Immersive Sample"
+            "Immersive Sample",
+            "Glide Sample"
     };
 
     @Override
@@ -81,6 +83,8 @@ public class LauncherActivity extends AppCompatActivity {
                         break;
                     case 6:
                         clazz = ImmersiveActivity.class;
+                    case 7:
+                        clazz = GlideSampleActivity.class;
                 }
 
                 Context context = holder.itemView.getContext();
