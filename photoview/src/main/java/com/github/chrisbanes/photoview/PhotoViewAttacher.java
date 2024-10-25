@@ -99,17 +99,27 @@ public class PhotoViewAttacher implements View.OnTouchListener,
 
     private float mOffsetX, mOffsetY;
 
+    // my addition
+    private boolean mDisableDrag = false;
+    private boolean mDisableFling = false;
+
     private OnGestureListener onGestureListener = new OnGestureListener() {
         @Override
         public void onDrag(float dx, float dy) {
-            if (mScaleDragDetector.isScaling()) {
-                return; // Do not drag if we are already scaling
+
+            // my addition
+            if(mDisableDrag && getScale() <= getMinimumScale()){
+                Log.w(TAG,"Gesture disable drag.");
+            }else{
+                if (mScaleDragDetector.isScaling()) {
+                    return; // Do not drag if we are already scaling
+                }
+                if (mOnViewDragListener != null) {
+                    mOnViewDragListener.onDrag(dx, dy);
+                }
+                mSuppMatrix.postTranslate(dx, dy);
+                checkAndDisplayMatrix();
             }
-            if (mOnViewDragListener != null) {
-                mOnViewDragListener.onDrag(dx, dy);
-            }
-            mSuppMatrix.postTranslate(dx, dy);
-            checkAndDisplayMatrix();
 
             /*
              * Here we decide whether to let the ImageView's parent to start taking
@@ -140,6 +150,11 @@ public class PhotoViewAttacher implements View.OnTouchListener,
 
         @Override
         public void onFling(float startX, float startY, float velocityX, float velocityY) {
+
+            if(mDisableFling && getScale() <= getMinimumScale()){
+                Log.w(TAG,"Gesture disable fling.");
+                return;
+            }
             mCurrentFlingRunnable = new FlingRunnable(mImageView.getContext());
             mCurrentFlingRunnable.fling(getImageViewWidth(mImageView),
                 getImageViewHeight(mImageView), (int) velocityX, (int) velocityY);
@@ -327,6 +342,17 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     @Deprecated
     public boolean isZoomEnabled() {
         return mZoomEnabled;
+    }
+
+    public void setDragFlingDisable(boolean disable){
+        mDisableDrag = disable;
+        mDisableFling = disable;
+    }
+    public boolean isDragDisable() {
+        return mDisableDrag;
+    }
+    public boolean isFlingDisable() {
+        return mDisableFling;
     }
 
     public RectF getDisplayRect() {

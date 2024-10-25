@@ -164,6 +164,16 @@ public class PhotoView extends AppCompatImageView {
         attacher.setZoomable(zoomable);
     }
 
+    public void setDragFlingDisable(boolean disable){
+        attacher.setDragFlingDisable(disable);
+    }
+    public boolean isDragDisable() {
+        return attacher.isDragDisable();
+    }
+    public boolean isFlingDisable() {
+        return attacher.isFlingDisable();
+    }
+
     public RectF getDisplayRect() {
         return attacher.getDisplayRect();
     }

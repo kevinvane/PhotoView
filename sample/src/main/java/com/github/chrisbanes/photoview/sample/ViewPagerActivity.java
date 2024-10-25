@@ -51,6 +51,7 @@ public class ViewPagerActivity extends AppCompatActivity {
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
             photoView.setImageResource(sDrawables[position]);
+            photoView.setDragFlingDisable(true);
             // Now just add PhotoView to ViewPager and return it
             container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             return photoView;
