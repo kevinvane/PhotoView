@@ -570,7 +570,11 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             mScaleType = scaleType;
             update();
         }else{
-            Log.w(TAG, "setScaleType: " + scaleType.toString() + " is not supported!");
+            if(scaleType != null){
+                Log.w(TAG, "setScaleType: " + scaleType + " is not supported!");
+            }else{
+                Log.w(TAG, "setScaleType: null is not supported!");
+            }
         }
     }
 
