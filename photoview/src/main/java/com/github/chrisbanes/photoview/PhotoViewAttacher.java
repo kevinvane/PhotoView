@@ -755,7 +755,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
                 dy = (viewHeight - drawableHeight * scale) / 2F;
             }
             mBaseMatrix.postTranslate(dx, dy);
-            Log.w(TAG, "setScaleType: CENTER_CROP Success!");
+            Log.w(TAG, "updateBaseMatrix: CENTER_CROP Success!");
 
             // CENTER_CROP 居中
             // mBaseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F,
@@ -774,7 +774,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             }
             switch (mScaleType) {
                 case FIT_CENTER:
-                    Log.w(TAG, "setScaleType: FIT_CENTER!");
+                    Log.w(TAG, "updateBaseMatrix: FIT_CENTER Success!");
                     mBaseMatrix.setRectToRect(mTempSrc, mTempDst, ScaleToFit.CENTER);
                     break;
                 case FIT_START:
