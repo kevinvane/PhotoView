@@ -110,6 +110,16 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             // my addition
             if(mDisableDrag && getScale() <= getMinimumScale()){
                 Log.w(TAG,"Gesture disable drag.");
+
+                // MyAdd: 这里禁止了拖动，必须允许父View拦截触摸事件
+                // 否则 ViewPager 不能左右，滑动
+                ViewParent parent = mImageView.getParent();
+                if(parent != null){
+                    Log.i(TAG, "parent Intercept TouchEvent");
+                    parent.requestDisallowInterceptTouchEvent(false);
+                }else{
+                    Log.w(TAG, "parent is null");
+                }
             }else{
                 if (mScaleDragDetector.isScaling()) {
                     return; // Do not drag if we are already scaling
@@ -138,11 +148,13 @@ public class PhotoViewAttacher implements View.OnTouchListener,
                         || (mVerticalScrollEdge == VERTICAL_EDGE_TOP && dy >= 1f)
                         || (mVerticalScrollEdge == VERTICAL_EDGE_BOTTOM && dy <= -1f)) {
                     if (parent != null) {
+                        Log.i(TAG, "parent Intercept TouchEvent");
                         parent.requestDisallowInterceptTouchEvent(false);
                     }
                 }
             } else {
                 if (parent != null) {
+                    Log.w(TAG, "parent not Intercept TouchEvent");
                     parent.requestDisallowInterceptTouchEvent(true);
                 }
             }
@@ -754,6 +766,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             }else{
                 dy = (viewHeight - drawableHeight * scale) / 2F;
             }
+            Log.w(TAG, "updateBaseMatrix: CENTER_CROP postTranslate: " + dx + ", "+ dy);
             mBaseMatrix.postTranslate(dx, dy);
             Log.w(TAG, "updateBaseMatrix: CENTER_CROP Success!");
 
